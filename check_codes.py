@@ -86,7 +86,10 @@ def find_codes():
 def send_to_discord(code, source):
     payload = {
         "username": "Warline Gift Code Bot",
-        "allowed_mentions": {"parse": []},
+        "content": "@everyone",
+        "allowed_mentions": {
+            "parse": ["everyone"]
+        },
         "embeds": [{
             "title": "🎁 Warline Gift Code Found!",
             "description": (
