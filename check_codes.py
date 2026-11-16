@@ -102,7 +102,11 @@ def send_to_discord(code, source):
             "color": 5763719,
             "fields": [{
                 "name": "🔎 Source",
-                "value": f"[View source]({source})"
+                "value": (
+    f"[View source]({source})"
+    if source.startswith(("https://", "http://"))
+    else source
+)
             }],
             "footer": {
                 "text": "Warline Alliance • Automated Code Alerts"
@@ -116,8 +120,27 @@ def send_to_discord(code, source):
     response.raise_for_status()
 
 
+
 def main():
     found = find_codes()
+
+    # Add manually submitted gift codes
+    manual_file = Path("manual_codes.json")
+
+    if manual_file.exists():
+        manual_data = json.loads(
+            manual_file.read_text(encoding="utf-8")
+        )
+
+        for code in manual_data.get("codes", []):
+            code = code.strip().upper()
+
+            if code:
+                found.setdefault(
+                    code,
+                    "Manually submitted by alliance management"
+                )
+
 
     if not found:
         print("No candidate codes found.")
